@@ -26,11 +26,11 @@ import androidx.compose.ui.unit.dp
 import com.example.infoapp.R
 import com.example.infoapp.ui.theme.BgTransparent
 import com.example.infoapp.ui.theme.MainRed
+import com.example.infoapp.utils.DrawerEvents
 
 
-@Preview(showBackground = true)
 @Composable
-fun DrawerMenu() {
+fun DrawerMenu(onEvent: (DrawerEvents) -> Unit) {
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(
@@ -42,7 +42,9 @@ fun DrawerMenu() {
         )
         Column(modifier = Modifier.fillMaxSize()) {
             Header()
-            Body()
+            Body() { event ->
+                onEvent(event)
+            }
         }
     }
 }
@@ -82,10 +84,10 @@ fun Header() {
 }
 
 @Composable
-fun Body() {
+fun Body(onEvent: (DrawerEvents) -> Unit) {
     val list = stringArrayResource(id = R.array.drawer_list)
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        itemsIndexed(list) { _, title ->
+        itemsIndexed(list) { index, title ->
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -96,7 +98,12 @@ fun Body() {
                 Text(text = title, modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-
+                        onEvent(
+                            DrawerEvents.onItemClick(
+                                title = title,
+                                index = index
+                            )
+                        )
                     }
                     .padding(10.dp)
                     .wrapContentWidth(), fontWeight = FontWeight.Bold)

@@ -8,9 +8,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import com.example.infoapp.ui.theme.InfoAppTheme
 import com.example.infoapp.ui_components.DrawerMenu
 import com.example.infoapp.ui_components.MainTopBar
+import com.example.infoapp.utils.DrawerEvents
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -21,15 +24,27 @@ class MainActivity : ComponentActivity() {
             val topBarTitle = remember {
                 mutableStateOf("")
             }
+            val coroutineScope = rememberCoroutineScope()
             InfoAppTheme {
                 Scaffold(
                     topBar = {
                         MainTopBar(title = topBarTitle.value)
-                    }
-                ) {
+                    },
+
+                    )
+                {
 
                 }
-                DrawerMenu()
+                DrawerMenu() { event ->
+                    when (event) {
+                        is DrawerEvents.onItemClick -> {
+                            topBarTitle.value = event.title
+                        }
+                    }
+                    coroutineScope.launch {
+                        
+                    }
+                }
             }
         }
     }
